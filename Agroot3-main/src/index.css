@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --agroot-cream: #F5F0E4;
+  --agroot-cream-dark: #EDE8DA;
+  --agroot-forest: #2D4A3E;
+  --agroot-forest-mid: #3D6B52;
+  --agroot-forest-light: #4A7A5A;
+  --agroot-olive: #6A8F6A;
+  --agroot-tan: #C8B89A;
+  --agroot-tan-light: #E0D9CC;
+  --agroot-clay: #C0392B;
+  --agroot-parchment: #FAF7F0;
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  html {
+    font-family: 'Sora', 'Inter', system-ui, sans-serif;
+  }
+  body {
+    background-color: var(--agroot-cream);
+    color: #1A2E1A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .bg-cream { background-color: var(--agroot-cream); }
+  .bg-cream-dark { background-color: var(--agroot-cream-dark); }
+  .bg-forest { background-color: var(--agroot-forest); }
+  .bg-forest-mid { background-color: var(--agroot-forest-mid); }
+  .bg-forest-light { background-color: var(--agroot-forest-light); }
+  .text-forest { color: var(--agroot-forest); }
+  .text-forest-mid { color: var(--agroot-forest-mid); }
+  .text-forest-light { color: var(--agroot-forest-light); }
+  .border-tan { border-color: var(--agroot-tan-light); }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Agroot</string>
+    <string name="title_activity_main">Agroot</string>
+    <string name="package_name">com.agroot.app</string>
+    <string name="custom_url_scheme">com.agroot.app</string>
+</resources>
