@@ -94,6 +94,85 @@ app.get("/seeds", (req, res) => {
   });
 });
 
+// Get profile details
+app.get('/getProfile', (req, res) => {
+  const { email } = req.query;
+  if (!email) {
+    return res.status(400).json({ error: "Missing email" });
+  }
+
+  db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+    if (err) return res.status(500).json(err);
+    if (results.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(results[0]);
+  });
+});
+
+// Update profile details with auto-migrations
+app.post('/updateProfile', (req, res) => {
+  const { email, name, phone, state, city } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: "Missing email" });
+  }
+
+  db.query("SHOW COLUMNS FROM users", (err, columns) => {
+    if (err) {
+      console.error("SHOW COLUMNS failed:", err);
+      return res.status(500).json(err);
+    }
+
+    const hasColumn = (colName) => columns.some(c => c.Field.toLowerCase() === colName.toLowerCase());
+
+    const alterQueries = [];
+    if (!hasColumn('phone')) alterQueries.push("ALTER TABLE users ADD COLUMN phone VARCHAR(20)");
+    if (!hasColumn('state')) alterQueries.push("ALTER TABLE users ADD COLUMN state VARCHAR(100)");
+    if (!hasColumn('city')) alterQueries.push("ALTER TABLE users ADD COLUMN city VARCHAR(100)");
+
+    const runAlters = (index) => {
+      if (index >= alterQueries.length) {
+        const updateQuery = `
+          INSERT INTO users (name, email, phone, state, city)
+          VALUES (?, ?, ?, ?, ?)
+          ON DUPLICATE KEY UPDATE
+            name = VALUES(name),
+            phone = VALUES(phone),
+            state = VALUES(state),
+            city = VALUES(city)
+        `;
+        db.query(updateQuery, [name || '', email, phone || '', state || '', city || ''], (updateErr, result) => {
+          if (updateErr) {
+            console.error("Profile SQL Insert/Update failed:", updateErr);
+            return res.status(500).json(updateErr);
+          }
+          res.json({ message: "Profile saved successfully", result });
+        });
+        return;
+      }
+
+      db.query(alterQueries[index], (alterErr) => {
+        if (alterErr) {
+          console.error(`Alter query failed: ${alterQueries[index]}`, alterErr);
+        }
+        runAlters(index + 1);
+      });
+    };
+
+    const hasUniqueEmail = columns.some(c => c.Field.toLowerCase() === 'email' && (c.Key === 'UNI' || c.Key === 'PRI'));
+    if (!hasUniqueEmail) {
+      db.query("ALTER TABLE users ADD UNIQUE (email)", (uniqueErr) => {
+        if (uniqueErr) {
+          console.error("Adding unique constraint on email failed:", uniqueErr);
+        }
+        runAlters(0);
+      });
+    } else {
+      runAlters(0);
+    }
+  });
+});
+
 app.listen(5000, () => {
   console.log('Server running on port 5000');
 });

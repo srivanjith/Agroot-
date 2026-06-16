@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">Agroot</string>
     <string name="title_activity_main">Agroot</string>
-    <string name="package_name">com.agroot.app</string>
-    <string name="custom_url_scheme">com.agroot.app</string>
+    <string name="package_name">myagroot.com</string>
+    <string name="custom_url_scheme">myagroot.com</string>
 </resources>

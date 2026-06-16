@@ -12,6 +12,7 @@ import MyRentals from "./pages/MyRentals";
 import SatelliteView from "./pages/SatelliteView";
 import CropCalendar from "./pages/CropCalendar";
 import CostTracker from "./pages/CostTracker";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/satellite" element={<SatelliteView />} />
           <Route path="/calendar" element={<CropCalendar />} />
           <Route path="/costs" element={<CostTracker />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </BrowserRouter>
     </AppProvider>

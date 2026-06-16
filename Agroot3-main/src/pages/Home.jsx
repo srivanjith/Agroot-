@@ -26,22 +26,7 @@ const Home = () => {
   const { t } = useTranslation();
   const [commandOpen, setCommandOpen] = useState(false);
 
-  const addUser = async () => {
-    const response = await fetch("http://localhost:5000/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: "Sri",
-        email: "sri@example.com"
-      })
-    });
 
-    const data = await response.json();
-    console.log(data);
-    alert(data.message);
-  };
   const [soilData, setSoilData] = useState(null);
   const [cityName, setCityName] = useState("");
   const [stateName, setStateName] = useState("");
@@ -168,14 +153,7 @@ const Home = () => {
       {/* ── MAIN CONTENT ── */}
       <div className="flex-1 px-5 py-5 space-y-4 pb-28">
 
-        {/* Test Add User Button */}
-        <button 
-          onClick={addUser} 
-          className="w-full py-3 rounded-2xl font-bold text-white shadow-sm" 
-          style={{ background: "var(--agroot-forest)" }}
-        >
-          Add Test User
-        </button>
+
 
         {/* Soil Health Card */}
         <motion.section
@@ -361,7 +339,7 @@ const Home = () => {
         >
           <span className="text-2xl">🎙️</span>
         </button>
-        <button onClick={() => navigate("/language")} className="flex flex-col items-center gap-1">
+        <button onClick={() => navigate("/profile")} className="flex flex-col items-center gap-1">
           <span className="text-xl">👤</span>
           <span className="text-[10px] text-gray-500">Profile</span>
         </button>

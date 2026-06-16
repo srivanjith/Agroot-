@@ -4,7 +4,7 @@ android {
     namespace = "com.agroot.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.agroot.app"
+        applicationId "myagroot.com"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -40,6 +40,21 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+
+    // ── Firebase BoM (manages all Firebase library versions automatically) ──
+    implementation platform('com.google.firebase:firebase-bom:34.14.1')
+
+    // Firebase Analytics (no version needed when using BoM)
+    implementation 'com.google.firebase:firebase-analytics'
+
+    // Firebase Authentication
+    implementation 'com.google.firebase:firebase-auth'
+
+    // Cloud Firestore
+    implementation 'com.google.firebase:firebase-firestore'
+
+    // Firebase Cloud Messaging (push notifications)
+    implementation 'com.google.firebase:firebase-messaging'
 }
 
 apply from: 'capacitor.build.gradle'

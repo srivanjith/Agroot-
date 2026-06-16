@@ -29,6 +29,7 @@ const Login = () => {
   const [isError, setIsError] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [particles, setParticles] = useState([]);
+  const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
 
@@ -65,27 +66,34 @@ const Login = () => {
   };
 
   const handleSendOTP = async () => {
+    if (loading) return;
     addLog("Send OTP Clicked");
     try {
       if (!email || phone.length !== 10) {
         triggerError("Invalid credentials");
         return;
       }
-      await checkConnection();
+      setLoading(true);
+      // Run connection check asynchronously in the background so it doesn't block the UI
+      checkConnection();
       await sendOTP(email, addLog);
       setStep("otp");
     } catch (err) {
       triggerError("Failed to send OTP");
       console.error("SEND OTP ERROR:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleVerifyOTP = async () => {
+    if (loading) return;
     addLog("Verify OTP Clicked");
     try {
+      setLoading(true);
       const result = await verifyOTP(email, otp.join(""), addLog);
       if (!result.success) {
-        triggerError("Verification failed");
+        triggerError(result.message || "Verification failed");
         return;
       }
       
@@ -108,7 +116,7 @@ const Login = () => {
         addLog(`User Creation Failed: ${userErr.message}`);
       }
       
-      localStorage.setItem("agroot_user", JSON.stringify({ phone }));
+      localStorage.setItem("agroot_user", JSON.stringify({ email, phone }));
       
       // Trigger success animation
       setIsSuccess(true);
@@ -119,6 +127,8 @@ const Login = () => {
     } catch (err) {
       triggerError(err.message || "Verification Failed");
       console.error("VERIFY OTP ERROR:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -338,7 +348,7 @@ const Login = () => {
                     initial="hidden"
                     animate="visible"
                     exit="hidden"
-                    className="flex gap-2 justify-between"
+                    className="flex gap-1.5 justify-between w-full"
                   >
                     {[0, 1, 2, 3, 4, 5].map((index) => (
                       <input
@@ -347,7 +357,7 @@ const Login = () => {
                         type="text"
                         inputMode="numeric"
                         maxLength={1}
-                        className="w-12 h-14 rounded-2xl text-xl outline-none transition-all text-center font-bold text-[#2D4A3E] bg-white/50 focus:bg-white/90 border border-white/60 focus:border-[#8ABF82] focus:ring-2 focus:ring-[#8ABF82]/50 shadow-sm sm:w-14 sm:h-16"
+                        className="flex-1 w-full max-w-[3.2rem] aspect-[5/6] text-lg sm:text-xl rounded-2xl outline-none transition-all text-center font-bold text-[#2D4A3E] bg-white/50 focus:bg-white/90 border border-white/60 focus:border-[#8ABF82] focus:ring-2 focus:ring-[#8ABF82]/50 shadow-sm"
                         value={otp[index]}
                         onChange={(e) => {
                           const val = e.target.value.replace(/[^0-9]/g, "");
@@ -402,15 +412,25 @@ const Login = () => {
 
                 <motion.div variants={childVariants} className="pt-2">
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: loading ? 1 : 1.02 }}
+                    whileTap={{ scale: loading ? 1 : 0.95 }}
+                    disabled={loading}
                     onClick={step === "phone" ? handleSendOTP : handleVerifyOTP}
                     className="w-full block py-4 rounded-2xl text-white font-semibold text-sm shadow-[0_8px_20px_rgba(74,122,90,0.3)] transition-all overflow-hidden relative"
                     style={{
                       background: "linear-gradient(135deg, #4A7A5A 0%, #64CF57 100%)",
+                      opacity: loading ? 0.8 : 1,
+                      cursor: loading ? "not-allowed" : "pointer"
                     }}
                   >
-                    <span>{step === "phone" ? "CONTINUE" : "VERIFY"}</span>
+                    {loading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>{step === "phone" ? "SENDING..." : "VERIFYING..."}</span>
+                      </div>
+                    ) : (
+                      <span>{step === "phone" ? "CONTINUE" : "VERIFY"}</span>
+                    )}
                   </motion.button>
                 </motion.div>
 

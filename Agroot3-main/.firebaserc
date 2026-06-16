@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "agroot-2e631"
+  },
   "targets": {},
   "etags": {}
 }
