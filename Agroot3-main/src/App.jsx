@@ -13,6 +13,7 @@ import SatelliteView from "./pages/SatelliteView";
 import CropCalendar from "./pages/CropCalendar";
 import CostTracker from "./pages/CostTracker";
 import Profile from "./pages/Profile";
+import AlertsPage from "./pages/AlertsPage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/calendar" element={<CropCalendar />} />
           <Route path="/costs" element={<CostTracker />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/alerts" element={<AlertsPage />} />
         </Routes>
       </BrowserRouter>
     </AppProvider>
